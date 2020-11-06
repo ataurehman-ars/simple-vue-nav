@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src = "vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../fontawesome/css/all.css">
+    <title>Vue if</title>
+</head>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Candara;
+}    
+
+#menu-section {
+    display: block;
+}
+
+#menu-list {
+    display: flex;
+    column-gap: calc(10px + 2vw);
+    margin: 0;
+    padding : 10px;
+}
+
+#menu-list li {
+    list-style: none;
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+}
+
+#menu-list > li {
+    font-weight: bolder;
+    font-size: calc(16px + 1vh);
+    position: relative;
+}
+
+#menu-list > li i {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.sub_content {
+    position: absolute;
+    background: #fff;
+    z-index: 100;
+    padding: 20px calc(20px + 1vw);
+    margin: 10px 0;
+    box-shadow: 1px 1px 5px gray;
+}
+
+.sub_content ul {
+    padding: 0;
+    margin: 0;
+    display: grid;
+    row-gap: 20px;
+}
+
+.sub_content ul li:hover {
+    color: gray;
+}
+
+@keyframes show-sub-menu{
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100%;
+    }
+}
+
+@media (max-width : 700px){
+
+    #menu-list {
+        
+        display: grid;
+        grid-auto-flow: row;
+        row-gap: calc(10px + 1vh);
+    }
+
+    .sub_content {
+        width: 100%;
+        position: relative;
+    }
+
+}
+</style>
+
+<body id = "body">
+
+    <section id ="menu-section">
+    <ul id = "menu-list">
+        <li v-for = "(content, i) in list_contents" 
+        @[starter] = "content.show_sub = content.show_sub && starter === 'click' ? '' : content.sub_contents 
+        rotate_i(i, content.show_sub)" >
+        {{content.text}}
+
+        <i class = "fas fa-sort-down" v-if = "content.sub_contents"></i>
+
+        
+        <div v-if = "content.sub_contents" class = "sub_content" 
+        @[ender] = "content.show_sub = ''
+        rotate_i(i, '')" 
+        v-show = "content.show_sub" >
+        <ul >
+        <li v-for = "sub in content.sub_contents">{{sub}}</li>
+        </ul>
+        </div>
+        </li>
+    </ul>
+  </section>
+    
+<script type="text/javascript">
+    
+    let vue_menu = new Vue({
+        el : "#menu-list" , 
+
+        data : { 
+            list_contents : [{text : "About", sub_contents : ["Team", "Leadership" , "Financers"], show_sub : false} , 
+            {text : "Home" , sub_contents : ""  , show_sub : false} , 
+            {text : "Contact" , sub_contents : ["Online" , "Email" , "Phone"] , show_sub : false} , 
+            {text : "Location", sub_contents : ["Office location", "Remote locations"] , show_sub : false  } , 
+            {text : "Help" , sub_contents : ["Documentation", "Online tutorials"] , show_sub : false} , 
+            {text : "Contribute" , sub_contents : "" , show_sub : false} ] 
+            , 
+
+            isVisible : false, 
+
+            starter : '' , 
+            ender : '' , 
+
+            sub_menus : document.getElementsByClassName("sub_content") 
+            
+        } 
+        , 
+
+        created() {
+        onresize = this.getWidth
+        onload = this.getWidth
+        }
+        ,
+        methods: {
+        getWidth: function() {
+            this.starter  = innerWidth <= 700 ? "click" : "mouseenter" 
+            this.ender = innerWidth <= 700 ? "" : "mouseleave"
+        }  
+        , 
+        rotate_i : function(i, rotate){
+            try{
+
+            if (rotate){    
+            this.$el.children[i].children[0].style.animation  = "rotate-arrow-up 1s forwards"
+            this.$el.children[i].children[1].style.animation  = "fade-sub-menu 1s forwards"}
+
+            else
+            this.$el.children[i].children[0].style.animation  = "rotate-arrow-down 1s forwards"
+            }
+
+            catch(err){  }
+            
+        }
+     
+        }
+    })
+
+
+    </script>
+
+<style>
+
+@keyframes rotate-arrow-up {
+
+    from {
+        transform: rotateZ(0);
+    }
+    to {
+        transform:  rotateZ(180deg);
+    }
+    
+}
+@keyframes rotate-arrow-down {
+
+from {
+    transform: rotateZ(180deg);
+}
+to {
+    transform:  rotateZ(0);
+}
+
+}
+@keyframes fade-sub-menu {
+
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100%;
+    }
+    
+}
+
+</style>    
+    
+</body>
+</html>
+
+
+
